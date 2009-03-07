@@ -8,7 +8,9 @@ module MuninManager
     end    
     
     def registered_plugins
-      @registered_plugins ||= constants.map {|c| const_get(c) }
+      @registered_plugins ||= constants.
+        map {|c| const_get(c) }.
+        select {|const| const.is_a?(Class) && const < MuninManager::ActsAsMuninPlugin}
     end
     
     def [](*names)

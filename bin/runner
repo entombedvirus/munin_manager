@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+# This file will serve as the target for the symlinks in /etc/munin/plugins.
+# It's the responsibility of this script to run the plugin indicated by the
+# symlink name.
+
+this_file = File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
+require "#{File.dirname(this_file)}/../lib/munin_manager"
+
+plugin_name = File.basename($0)
+
+if plugin = MuninManager::Plugins[plugin_name]
+  plugin.run
+  exit(0)
+else
+  STDERR.puts "'%s' plugin was not found" % plugin_name
+  exit(1)
+end
