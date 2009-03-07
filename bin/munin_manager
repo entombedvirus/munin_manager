@@ -40,15 +40,6 @@ parser = OptionParser.new do |opts|
     end
   end
   
-  opts.on("--plugin-dir DIR", "Directory where symlinks will be created when a plugin is installed",
-         "(default is '%s'" % options.plugin_dir) do |dir|
-    if File.directory?(dir) && File.writable?(dir)
-      options.plugin_dir = dir
-    else
-      STDERR.puts "'%s' does not exist or is not writable" % options.plugin_dir
-    end
-  end
-  
   opts.on("-a", "--install", "Installs a plugin by creating a symlink in '%s'" % options.plugin_dir)
   
   opts.on("-u", "--uninstall PLUGIN_NAME [PLUGIN_NAME]", Array,
@@ -62,6 +53,23 @@ parser = OptionParser.new do |opts|
       puts "'#{names}' plugin not found"
     end
   end
+
+  opts.separator ""
+  opts.separator "Options:"
+
+  opts.on("--plugin-dir DIR", "Directory where symlinks will be created when a plugin is installed",
+         "(default is '%s'" % options.plugin_dir) do |dir|
+    if File.directory?(dir) && File.writable?(dir)
+      options.plugin_dir = dir
+    else
+      STDERR.puts "'%s' does not exist or is not writable" % options.plugin_dir
+    end
+  end
+
+  opts.on("--force", "Forces the installation or uninstallation of plugins") do
+    options.force = true
+  end
+  
   
 end
 

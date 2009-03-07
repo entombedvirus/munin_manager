@@ -24,6 +24,24 @@ module MuninManager
       def help_text
         # Any general info concerning the plugin. Should be overriden by included class
       end
+
+      # Default uninstaller. Override in included classes if the default is not sufficient
+      def uninstall(options)
+        symlink = File.join(options.plugin_dir, plugin_name)
+
+        unless File.exists?(symlink)
+          STDERR.puts "'%s' does not seem to exist. Aborting..." % symlink
+          return
+        end
+
+        unless File.symlink?(symlink) || options.force
+          STDERR.puts "'%s' does not appear to be a symlink. Please specify --force option to remove" % symlink
+          return
+        end
+
+        STDOUT.puts "Removing '%s'..." % symlink
+        File.unlink(symlink)
+      end
     end
 
     module InstanceMethods
