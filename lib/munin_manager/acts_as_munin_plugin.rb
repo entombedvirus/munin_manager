@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module MuninManager
   module ActsAsMuninPlugin
     def self.included(klass)
@@ -23,6 +25,20 @@ module MuninManager
 
       def help_text
         # Any general info concerning the plugin. Should be overriden by included class
+      end
+
+      def install(options)
+        symlink = File.join(options.plugin_dir, plugin_name)
+        runner = File.join(File.dirname(__FILE__), "..", "..", "bin", "runner")
+        runner = File.expand_path(runner)
+
+        if File.exists?(symlink) && !options.force
+          STDERR.puts "'%s' already exists. Please specify --force option to overwrite" % symlink
+          return
+        end
+
+        STDOUT.puts "Installing '%s' at '%s'" % [plugin_name, symlink]
+        FileUtils.ln_sf(runner, symlink)
       end
 
       # Default uninstaller. Override in included classes if the default is not sufficient

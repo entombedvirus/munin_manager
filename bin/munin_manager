@@ -40,7 +40,15 @@ parser = OptionParser.new do |opts|
     end
   end
   
-  opts.on("-a", "--install", "Installs a plugin by creating a symlink in '%s'" % options.plugin_dir)
+  opts.on("-i", "--install PLUGIN_NAME [PLUGIN_NAME]", Array,
+    "Installs a plugin by creating a symlink in '%s'" % options.plugin_dir) do |names|
+    if options.plugins = MuninManager::Plugins[*names]
+      options.action = :install
+      options.plugin_names = names
+    else
+      puts "'%s' plugin not found" % names.join
+    end
+  end
   
   opts.on("-u", "--uninstall PLUGIN_NAME [PLUGIN_NAME]", Array,
     "Removes plugins from '%s'" % options.plugin_dir,
