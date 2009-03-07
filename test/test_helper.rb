@@ -1,6 +1,6 @@
-HERE = File.dirname(__FILE__)
+TEST_DIR = File.dirname(__FILE__)
 %w(lib ext bin test).each do |dir| 
-  $LOAD_PATH.unshift "#{HERE}/../#{dir}"
+  $LOAD_PATH.unshift "#{TEST_DIR}/../#{dir}"
 end
 
 %w(rubygems test/unit ruby-debug munin_manager).each do |f|
@@ -10,7 +10,7 @@ end
 class RailsLogReader < MuninManager::LogReader
   def initialize(*params)
     super
-    @state_dir = "#{HERE}/tmp"
+    @state_dir = "#{TEST_DIR}/tmp"
     @state_file = File.join(@state_dir, @me)
   end
   

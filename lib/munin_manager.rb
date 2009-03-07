@@ -1,9 +1,9 @@
-HERE = File.join(File.dirname(__FILE__), "munin_manager")
+munin_manager = File.join(File.dirname(__FILE__), "munin_manager")
 
-%w(log_reader plugins).each do |f|
-  require File.join(HERE, f)
+%w(log_reader plugins acts_as_munin_plugin).each do |f|
+  require File.join(munin_manager, f)
 end
 
-Dir[File.join(HERE, "plugins", "*")].each do |file|
+Dir[File.join(munin_manager, "plugins", "*")].each do |file|
   require file
 end

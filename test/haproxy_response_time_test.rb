@@ -1,11 +1,11 @@
 require File.dirname(__FILE__) + "/test_helper"
 
-class HAProxyResponseTimeTest < Test::Unit::TestCase
+class HaproxyResponseTimeTest < Test::Unit::TestCase
   include MuninManager::Plugins
   
   def setup
-    @reader = HAProxy.new("#{HERE}/logs/haproxy.log")
-    @reader.state_dir = "#{HERE}/tmp"
+    @reader = HaproxyResponseTime.new("#{TEST_DIR}/logs/haproxy.log")
+    @reader.state_dir = "#{TEST_DIR}/tmp"
   end
   
   def teardown
@@ -32,6 +32,6 @@ class HAProxyResponseTimeTest < Test::Unit::TestCase
   end
   
   def test_has_help_text
-    assert !HAProxy.help_text.empty?
+    assert !HaproxyResponseTime.help_text.empty?
   end
 end

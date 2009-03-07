@@ -1,5 +1,7 @@
 module MuninManager
-  class Plugins::HAProxy < LogReader
+  class Plugins::HaproxyResponseTime < LogReader
+    include ActsAsMuninPlugin
+
     def data
       @data ||= Hash.new {|h, k| h[k] = Array.new}
     end
@@ -74,10 +76,6 @@ Also, make sure that the '/var/lib/munin/plugin-state' is writable by munin.
 $ sudo chmod 777 /var/lib/munin/plugin-state
 
 }
-    end
-    
-    def self.plugin_name
-      File.basename(__FILE__, ".rb")
     end
     
     private
