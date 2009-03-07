@@ -8,7 +8,7 @@ require 'ostruct'
 require "#{File.dirname(__FILE__)}/../lib/munin_manager"
 
 options = OpenStruct.new
-options.install_to = "/etc/munin/plugins"
+options.plugin_dir = "/etc/munin/plugins"
 
 parser = OptionParser.new do |opts|
   opts.banner = "Usage: munin_manager <command> [<plugin_name>[:<symlink_name>]] [options]"
@@ -16,7 +16,7 @@ parser = OptionParser.new do |opts|
   
   opts.separator "Commands:"
   
-  opts.on("-l", "--list", "List available plugins to install") do |_|
+  opts.on("-l", "--list", "List available plugins to install") do
     buffer = []
     buffer << "Available Plugins"
     buffer << "================="
@@ -33,27 +33,31 @@ parser = OptionParser.new do |opts|
   opts.on("-s", "--show PLUGIN_NAME", "Shows details about a plugin") do |name|
     begin
       puts MuninManager::Plugins[name].help_text
+    rescue NoMethodError
+      STDERR.puts "'%s' plugin was not found" % name
     rescue
       STDERR.puts "No additional information is available about this plugin."
     end
   end
   
-  opts.on("--install-to DIR", "Directory where symlinks will be created when a plugin in installed") do |dir|
+  opts.on("--plugin-dir DIR", "Directory where symlinks will be created when a plugin is installed",
+         "(default is '%s'" % options.plugin_dir) do |dir|
     if File.directory?(dir) && File.writable?(dir)
-      options.install_to = dir
+      options.plugin_dir = dir
     else
-      STDERR.puts "'#{dir}' does not exist or is not writable"
+      STDERR.puts "'%s' does not exist or is not writable" % options.plugin_dir
     end
   end
   
-  opts.on("-a", "--install", "Installs a plugin by creating a symlink in '#{options.install_to}'")
+  opts.on("-a", "--install", "Installs a plugin by creating a symlink in '%s'" % options.plugin_dir)
   
   opts.on("-u", "--uninstall PLUGIN_NAME [PLUGIN_NAME]", Array,
-    "Removes the plugin from '#{options.install_to}'",
+    "Removes plugins from '%s'" % options.plugin_dir,
     "if it is a symlink") do |names|
     
     if options.plugins = MuninManager::Plugins[*names]
       options.action = :uninstall      
+      options.plugin_names = names
     else
       puts "'#{names}' plugin not found"
     end
@@ -62,8 +66,10 @@ parser = OptionParser.new do |opts|
 end
 
 parser.parse!(ARGV)
+options.freeze!
 
 case options.action
-when :uninstall
-  puts options.inspect
+when :uninstall, :install
+  plugins = Array(MuninManager::Plugins[*options.plugin_names])
+  plugins.each {|p| p.send(options.action, options)}
 end
