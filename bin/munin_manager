@@ -1,0 +1,69 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'ruby-debug'
+
+require 'optparse'
+require 'ostruct'
+require "#{File.dirname(__FILE__)}/../lib/munin_manager"
+
+options = OpenStruct.new
+options.install_to = "/etc/munin/plugins"
+
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: munin_manager <command> [<plugin_name>[:<symlink_name>]] [options]"
+  opts.separator ""
+  
+  opts.separator "Commands:"
+  
+  opts.on("-l", "--list", "List available plugins to install") do |_|
+    buffer = []
+    buffer << "Available Plugins"
+    buffer << "================="
+    buffer << ""
+    
+    MuninManager::Plugins.each do |plugin|
+      buffer << plugin.plugin_name
+    end
+    
+    buffer << ""
+    puts buffer.join("\n")
+  end
+  
+  opts.on("-s", "--show PLUGIN_NAME", "Shows details about a plugin") do |name|
+    begin
+      puts MuninManager::Plugins[name].help_text
+    rescue
+      STDERR.puts "No additional information is available about this plugin."
+    end
+  end
+  
+  opts.on("--install-to DIR", "Directory where symlinks will be created when a plugin in installed") do |dir|
+    if File.directory?(dir) && File.writable?(dir)
+      options.install_to = dir
+    else
+      STDERR.puts "'#{dir}' does not exist or is not writable"
+    end
+  end
+  
+  opts.on("-a", "--install", "Installs a plugin by creating a symlink in '#{options.install_to}'")
+  
+  opts.on("-u", "--uninstall PLUGIN_NAME [PLUGIN_NAME]", Array,
+    "Removes the plugin from '#{options.install_to}'",
+    "if it is a symlink") do |names|
+    
+    if options.plugins = MuninManager::Plugins[*names]
+      options.action = :uninstall      
+    else
+      puts "'#{names}' plugin not found"
+    end
+  end
+  
+end
+
+parser.parse!(ARGV)
+
+case options.action
+when :uninstall
+  puts options.inspect
+end
