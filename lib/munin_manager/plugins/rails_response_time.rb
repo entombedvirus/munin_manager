@@ -32,11 +32,13 @@ module MuninManager
       configs = {
         "graph_title" => "Rails Response Times (by Controller->Action)",
         "graph_vlabel" => "time (secs)",
-        "graph_category" => "Performance"
+        "graph_category" => "Performance",
+        "graph_args" => "--upper-limit 1.0 --lower-limit 0.100 --rigid"
       }
       self.collect!(:save_state => false)
       self.data.each do |action_name, respose_time|
         configs["#{format_for_munin(action_name)}.label"] = action_name.sub("#", "->")
+        configs["#{format_for_munin(action_name)}.draw"] = "LINE2"
       end
 
       configs["graph_order"] = self.data.to_a.

@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{munin_manager}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Rohith Ravi"]
-  s.date = %q{2009-03-09}
+  s.date = %q{2009-03-10}
   s.description = %q{Tool to maintain and install munin plugins written in Ruby}
   s.email = %q{entombedvirus@gmail.com}
   s.executables = ["munin_manager", "runner"]

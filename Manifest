@@ -14,3 +14,4 @@ test/rails_response_time_test.rb
 ext/string.rb
 Rakefile
 Manifest
+munin_manager.gemspec
