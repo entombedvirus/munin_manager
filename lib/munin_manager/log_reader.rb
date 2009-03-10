@@ -38,7 +38,11 @@ module MuninManager
       @state_file ||= File.join(@state_dir, @me)
     end
 
-    def collect!
+    def collect!(options = {})
+      options = {
+        :save_state => true
+      }.merge(options)
+
       File.open(@file_name, "r") do |f|
         load_saved_state(f)
         
@@ -48,7 +52,7 @@ module MuninManager
         end
         
         process!
-        save_state(f)
+        save_state(f) if options[:save_state]
       end
     end
 

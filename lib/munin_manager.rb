@@ -1,6 +1,6 @@
 munin_manager = File.join(File.dirname(__FILE__), "munin_manager")
 
-%w(log_reader plugins acts_as_munin_plugin).each do |f|
+%w(../../ext/string log_reader plugins acts_as_munin_plugin).each do |f|
   require File.join(munin_manager, f)
 end
 

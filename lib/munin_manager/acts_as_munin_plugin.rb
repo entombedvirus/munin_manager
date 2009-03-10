@@ -39,6 +39,11 @@ module MuninManager
 
         STDOUT.puts "Installing '%s' at '%s'" % [plugin_name, symlink]
         FileUtils.ln_sf(runner, symlink)
+
+        STDOUT.puts help_text
+
+      rescue Errno::EACCES
+        STDERR.puts "ERROR: Permission denied while attempting to install to '%s'" % symlink
       end
 
       # Default uninstaller. Override in included classes if the default is not sufficient
