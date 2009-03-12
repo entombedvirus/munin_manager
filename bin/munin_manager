@@ -11,10 +11,12 @@ options = OpenStruct.new
 options.plugin_dir = "/etc/munin/plugins"
 
 parser = OptionParser.new do |opts|
-  opts.banner = "Usage: munin_manager <command> [<plugin_name>[:<symlink_name>]] [options]"
+  opts.banner = "Usage: munin_manager <command>  [options]"
   opts.separator ""
   
   opts.separator "Commands:"
+  opts.separator "PLUGIN_NAME is of the form <plugin>[:<symlink>]"
+  opts.separator ""
   
   opts.on("-l", "--list", "List available plugins to install") do
     buffer = []
@@ -40,26 +42,17 @@ parser = OptionParser.new do |opts|
     end
   end
   
-  opts.on("-i", "--install PLUGIN_NAME [PLUGIN_NAME]", Array,
+  opts.on("-i", "--install PLUGIN_NAME[,PLUGIN_NAME]", Array,
     "Installs a plugin by creating a symlink in '%s'" % options.plugin_dir) do |names|
-    if options.plugins = MuninManager::Plugins[*names]
       options.action = :install
       options.plugin_names = names
-    else
-      puts "'%s' plugin not found" % names.join
-    end
   end
   
-  opts.on("-u", "--uninstall PLUGIN_NAME [PLUGIN_NAME]", Array,
+  opts.on("-u", "--uninstall PLUGIN_NAME[,PLUGIN_NAME]", Array,
     "Removes plugins from '%s'" % options.plugin_dir,
     "if it is a symlink") do |names|
-    
-    if options.plugins = MuninManager::Plugins[*names]
       options.action = :uninstall      
       options.plugin_names = names
-    else
-      puts "'#{names}' plugin not found"
-    end
   end
 
   opts.separator ""
@@ -85,7 +78,18 @@ parser.parse!(ARGV)
 options.freeze!
 
 case options.action
-when :uninstall, :install
-  plugins = Array(MuninManager::Plugins[*options.plugin_names])
-  plugins.each {|p| p.send(options.action, options)}
+when :install, :uninstall
+  options.plugin_names.each do |plugin_name|
+    plugin_klass = MuninManager::Plugins.search(plugin_name)
+    
+    unless plugin_klass
+      STDERR.puts "ERROR: Matching plugin not found for '%s'" % plugin_name
+      exit(1)
+    end
+
+    new_options = options.dup
+    new_options.install_name = plugin_name
+
+    plugin_klass.send(options.action, new_options)
+  end
 end

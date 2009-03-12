@@ -15,10 +15,15 @@ module MuninManager
     
     def [](*names)
       if names.length == 1
-        return detect {|plugin| plugin.plugin_name == names.first}
+        return detect {|plugin_klass| plugin_klass.plugin_name == names.first}
       end
       
       names.map {|name| self[name]}
+    end
+
+    def search(name)
+      str = name.to_s.split(':', 2).first
+      detect {|plugin_klass| plugin_klass.plugin_name.starts_with?(str)}
     end
   end
 end

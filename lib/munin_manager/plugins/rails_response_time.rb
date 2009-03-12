@@ -1,6 +1,13 @@
 module MuninManager
   class Plugins::RailsResponseTime < LogReader
     include ActsAsMuninPlugin
+    attr_accessor :search_pattern
+
+    def initialize(log_file, options = {})
+      super(log_file)
+      @search_pattern = options[:search_pattern] || /.*/
+      @search_pattern = Regexp.new(@search_pattern) if @search_pattern.is_a?(String)
+    end
 
     def data
       @data ||= Hash.new {|h, k| h[k] = Array.new}
@@ -13,10 +20,12 @@ module MuninManager
 
         if line.starts_with?("Processing ")
           cols = line.split(/\s+/)
-          current_action = cols[1]
+          current_action = cols[1] if self.search_pattern.match(cols[1])
+
         elsif line.starts_with?("Completed in ") && !current_action.nil?
           cols = line.split(/\s+/)
           data[current_action] << cols[2].to_f
+          current_action = nil
         end
 
       end
@@ -56,7 +65,7 @@ module MuninManager
       log_file = ENV['log_file'] || "/var/log/rails.log"
       allowed_commands = ['config']
 
-      rails = new(log_file)
+      rails = new(log_file, :search_pattern => ENV['search_pattern'])
 
       if cmd = ARGV[0] and allowed_commands.include? cmd then
         puts rails.send(cmd.to_sym)
@@ -66,7 +75,7 @@ module MuninManager
       end
     end
 
-    def self.help_text
+    def self.help_text(options = {})
       %Q{
 #{plugin_name.capitalize} Munin Plugin
 ===========================
@@ -74,8 +83,9 @@ module MuninManager
 Please remember to add something like the lines below to /etc/munin/plugin-conf.d/munin-node
 if the rails log file is not at /var/log/rails.log
 
-[#{plugin_name}]
+[#{options[:symlink] || plugin_name}]
 env.log_file /var/log/custom/rails.log
+env.search_pattern UsersController.*
 
 Also, make sure that the '/var/lib/munin/plugin-state' is writable by munin.
 

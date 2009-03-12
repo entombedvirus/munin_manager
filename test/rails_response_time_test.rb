@@ -13,13 +13,26 @@ class RailsResponseTimeTest < Test::Unit::TestCase
   rescue
     # Do nothing
   end
+
+  def test_has_default_search_pattern
+    assert_kind_of Regexp, @reader.search_pattern
+  end
   
-  def test_parsing
+  def test_parsing_with_default_search_pattern
     @reader.collect!
     assert @reader.data.keys.length > 0
 
     @reader.data.each_pair do |k, v|
       assert v > 0, "Value mismatch for #{k}"
+    end
+  end
+
+  def test_parsing_with_non_default_search_string
+    @reader.search_pattern = /UsersController.*/
+    @reader.collect!
+
+    @reader.data.each_pair do |action_name, time|
+      assert_not_nil /UsersController.*/.match(action_name), "'%s' does not match search pattern" % action_name
     end
   end
 

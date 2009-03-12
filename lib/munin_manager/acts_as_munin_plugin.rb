@@ -23,24 +23,29 @@ module MuninManager
           downcase
       end
 
-      def help_text
+      def help_text(options = {})
         # Any general info concerning the plugin. Should be overriden by included class
       end
 
       def install(options)
-        symlink = File.join(options.plugin_dir, plugin_name)
+        install_as = options.install_name.split(":").last
+        symlink = File.join(options.plugin_dir, install_as)
         runner = File.join(File.dirname(__FILE__), "..", "..", "bin", "runner")
         runner = File.expand_path(runner)
 
-        if File.exists?(symlink) && !options.force
-          STDERR.puts "'%s' already exists. Please specify --force option to overwrite" % symlink
-          return
+        if File.exists?(symlink)
+          if options.force
+            File.unlink(symlink)
+          else
+            STDERR.puts "'%s' already exists. Please specify --force option to overwrite" % symlink
+            return
+          end
         end
 
         STDOUT.puts "Installing '%s' at '%s'" % [plugin_name, symlink]
         FileUtils.ln_sf(runner, symlink)
 
-        STDOUT.puts help_text
+        STDOUT.puts help_text(:symlink => install_as)
 
       rescue Errno::EACCES
         STDERR.puts "ERROR: Permission denied while attempting to install to '%s'" % symlink
@@ -48,7 +53,8 @@ module MuninManager
 
       # Default uninstaller. Override in included classes if the default is not sufficient
       def uninstall(options)
-        symlink = File.join(options.plugin_dir, plugin_name)
+        install_as = options.install_name.split(":").last
+        symlink = File.join(options.plugin_dir, install_as)
 
         unless File.exists?(symlink)
           STDERR.puts "'%s' does not seem to exist. Aborting..." % symlink
@@ -62,6 +68,8 @@ module MuninManager
 
         STDOUT.puts "Removing '%s'..." % symlink
         File.unlink(symlink)
+      rescue Errno::EACCES
+        STDERR.puts "ERROR: Permission denied while attempting to uninstall '%s'" % symlink
       end
     end
 
