@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{munin_manager}
-  s.version = "0.0.3"
+  s.version = "0.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Rohith Ravi"]
@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.description = %q{Tool to maintain and install munin plugins written in Ruby}
   s.email = %q{entombedvirus@gmail.com}
   s.executables = ["munin_manager", "runner"]
-  s.extra_rdoc_files = ["README.markdown", "bin/munin_manager", "bin/runner", "lib/munin_manager.rb", "lib/munin_manager/log_reader.rb", "lib/munin_manager/plugins/haproxy_response_time.rb", "lib/munin_manager/plugins/rails_response_time.rb", "lib/munin_manager/plugins.rb", "lib/munin_manager/acts_as_munin_plugin.rb", "ext/string.rb"]
-  s.files = ["README.markdown", "bin/munin_manager", "bin/runner", "lib/munin_manager.rb", "lib/munin_manager/log_reader.rb", "lib/munin_manager/plugins/haproxy_response_time.rb", "lib/munin_manager/plugins/rails_response_time.rb", "lib/munin_manager/plugins.rb", "lib/munin_manager/acts_as_munin_plugin.rb", "test/haproxy_response_time_test.rb", "test/log_reader_test.rb", "test/test_helper.rb", "test/rails_response_time_test.rb", "ext/string.rb", "Rakefile", "Manifest", "munin_manager.gemspec"]
+  s.extra_rdoc_files = ["bin/munin_manager", "bin/runner", "ext/string.rb", "lib/munin_manager/acts_as_munin_plugin.rb", "lib/munin_manager/log_reader.rb", "lib/munin_manager/plugins/haproxy_response_time.rb", "lib/munin_manager/plugins/rails_response_time.rb", "lib/munin_manager/plugins/scribe_net.rb", "lib/munin_manager/plugins.rb", "lib/munin_manager.rb", "README.markdown"]
+  s.files = ["bin/munin_manager", "bin/runner", "ext/string.rb", "lib/munin_manager/acts_as_munin_plugin.rb", "lib/munin_manager/log_reader.rb", "lib/munin_manager/plugins/haproxy_response_time.rb", "lib/munin_manager/plugins/rails_response_time.rb", "lib/munin_manager/plugins/scribe_net.rb", "lib/munin_manager/plugins.rb", "lib/munin_manager.rb", "Manifest", "munin_manager.gemspec", "Rakefile", "README.markdown", "test/haproxy_response_time_test.rb", "test/log_reader_test.rb", "test/rails_response_time_test.rb", "test/test_helper.rb"]
   s.has_rdoc = true
   s.homepage = %q{}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Munin_manager", "--main", "README.markdown"]
