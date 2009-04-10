@@ -29,7 +29,7 @@ module MuninManager
         graph_order << " "+ stat_name
         stat_config = "#{stat_name}.label #{stat_name}"  
         net_stats.each do |var,value|
-          value = "#{stat_name}," + value if var == :label
+          value = "#{stat_name}," + value if var == :cdef
           stat_config << "#{stat_name}.#{var} #{value}\n"
         end
       end
