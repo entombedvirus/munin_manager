@@ -22,13 +22,14 @@ module MuninManager
       END
 
 
-      stat_config = ''
+      
       graph_order = 'graph_order'
       counters.keys.each do |stat|
         stat_name = format_for_munin(stat)
         graph_order << " "+ stat_name
+        stat_config = "#{stat_name}.label #{stat_name}"  
         net_stats.each do |var,value|
-          value = "#{stat_name}," + value if var == :cdef
+          value = "#{stat_name}," + value if var == :label
           stat_config << "#{stat_name}.#{var} #{value}\n"
         end
       end
@@ -69,7 +70,6 @@ module MuninManager
     
     def net_stats
       stats = {
-          :label => 'read',
           :type => 'COUNTER',
           :cdef => '8,*'
       }
