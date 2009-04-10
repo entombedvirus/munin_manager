@@ -1,11 +1,11 @@
 bin/munin_manager
-bin/network_latency
 bin/runner
 ext/string.rb
 lib/munin_manager/acts_as_munin_plugin.rb
 lib/munin_manager/log_reader.rb
 lib/munin_manager/plugins/haproxy_response_time.rb
 lib/munin_manager/plugins/network_latency.rb
+lib/munin_manager/plugins/packet_loss.rb
 lib/munin_manager/plugins/rails_response_time.rb
 lib/munin_manager/plugins/scribe_net.rb
 lib/munin_manager/plugins.rb
