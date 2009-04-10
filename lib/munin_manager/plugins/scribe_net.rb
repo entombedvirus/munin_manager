@@ -46,7 +46,7 @@ module MuninManager
     
     def self.run
       host = ENV['SCRIBE_HOST'] || 'localhost';
-      port = ENV['SCRIBE_PORT'].to_i || 1463;
+      port = ENV['SCRIBE_PORT'] || 1463;
       scribe = new(host, port)
       allowed_commands = ['config']
 
