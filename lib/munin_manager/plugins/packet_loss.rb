@@ -10,9 +10,16 @@ module MuninManager
       else
         hostnames.each do |hostname|
           values = []
+          threads = []
           count.times do |i|
-            value = %x{(ping -c 10 #{hostname} 2> /dev/null || echo "1 packets transmitted, 1 received, 100% packet loss, time 0ms") | tail -2 | head -1 | cut -d' ' -f 6 | sed s/%//}.to_i
-            values << value
+            threads << Thread.new do
+              value = %x{(ping -c 10 #{hostname} 2> /dev/null || echo "1 packets transmitted, 1 received, 100% packet loss, time 0ms") | tail -2 | head -1 | cut -d' ' -f 6 | sed s/%//}.to_i
+              Thread.current[:value] = value
+            end
+          end
+          threads.each do |t|
+            t.join
+            values << t[:value]
           end
           avg = values.inject{|a,b| a + b}.to_f / values.size
           puts "#{sanitize(hostname)}.value #{avg}"
