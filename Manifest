@@ -6,7 +6,12 @@ lib/munin_manager/log_reader.rb
 lib/munin_manager/plugins/haproxy_response_time.rb
 lib/munin_manager/plugins/rails_response_time.rb
 lib/munin_manager/plugins/scribe_net.rb
+lib/munin_manager/plugins/starling_age.rb
+lib/munin_manager/plugins/starling_net.rb
+lib/munin_manager/plugins/starling_ops.rb
+lib/munin_manager/plugins/starling_queue.rb
 lib/munin_manager/plugins.rb
+lib/munin_manager/starling/starling_stats.rb
 lib/munin_manager.rb
 Manifest
 munin_manager.gemspec
