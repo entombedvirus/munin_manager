@@ -12,7 +12,7 @@ module MuninManager
         threads = []
         count.times do |i|
           threads << Thread.new do
-            output = %x{/usr/sbin/fping -c 10 -p 100 -q #{hostnames.join(" ")}}
+            output = %x{/usr/sbin/fping -c 10 -p 100 -q #{hostnames.join(" ")} 2>&1}
             Thread.current[:output] = output
           end
         end
@@ -27,7 +27,7 @@ module MuninManager
         
         values.each do |host, results|
           avg = results.size > 0 ? results.inject(0){|a,b| a + b}.to_f / results.size : -1
-          puts "#{sanitize(hostname)}.value #{avg}"
+          puts "#{sanitize(host)}.value #{avg}"
         end
       end
     end
