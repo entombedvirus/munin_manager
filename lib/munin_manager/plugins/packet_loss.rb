@@ -8,29 +8,34 @@ module MuninManager
       if ARGV[0] == "config"
         puts config(hostnames)
       else
-        hostnames.each do |hostname|
-          values = []
-          threads = []
-          count.times do |i|
-            threads << Thread.new do
-              value = %x{(ping -c 10 #{hostname} 2> /dev/null || echo "1 packets transmitted, 1 received, 100% packet loss, time 0ms") | tail -2 | head -1 | cut -d' ' -f 6 | sed s/%//}.to_i
-              Thread.current[:value] = value
+        values = Hash.new {|h,k| h[k] = []}
+        threads = []
+        count.times do |i|
+          threads << Thread.new do
+            output = %x{/usr/sbin/fping -c 10 -p 100 -q #{hostnames.join(" ")} 2>&1}
+            Thread.current[:output] = output
+          end
+        end
+        threads.each do |t|
+          t.join
+          t[:output].to_s.split("\n").each do |line|
+            if line =~ /^([^\s]+)\s*:\s*xmt\/rcv\/%loss = [0-9]+\/[0-9]+\/([0-9]+)%/
+              values[$1] << $2.to_f
             end
           end
-          threads.each do |t|
-            t.join
-            values << t[:value]
-          end
-          avg = values.inject{|a,b| a + b}.to_f / values.size
-          puts "#{sanitize(hostname)}.value #{avg}"
+        end
+
+        values.each do |host, results|
+          avg = results.size > 0 ? results.inject(0){|a,b| a + b}.to_f / results.size : -1
+          puts "#{sanitize(host)}.value #{avg}"
         end
       end
     end
-    
+
     def self.sanitize(hostname)
       hostname.to_s.gsub(/[^\w]/, '_')
     end
-    
+
     def self.config(hostnames)
       configs = {
         "graph_title" => "Packet Loss",
