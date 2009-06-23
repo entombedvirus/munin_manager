@@ -1,5 +1,5 @@
 require 'echoe'
-Echoe.new('munin_manager', '1.1.2') do |s|
+Echoe.new('munin_manager', '1.1.4') do |s|
   s.description = "Tool to maintain and install munin plugins written in Ruby"
   s.author = "Rohith Ravi"
   s.email = "entombedvirus@gmail.com"
