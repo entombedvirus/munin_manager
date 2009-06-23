@@ -66,7 +66,6 @@ module MuninManager
       port = ENV['PORT'] || 22122;
       starling = new(host, port)
 
-
       allowed_commands = ['config']
 
       if cmd = ARGV[0] and allowed_commands.include? cmd then

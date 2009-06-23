@@ -49,7 +49,7 @@ module MuninManager
 
     def values
       age_stats.inject("") do |ret, stat|
-        ret << "#{format_for_munin(stat[0])}.value #{@starling.stats[@host][stat[0]]/100.0}\n"
+        ret << "#{format_for_munin(stat[0])}.value #{@starling.stats[@host][stat[0]]/1000.0}\n"
       end
     end
 
