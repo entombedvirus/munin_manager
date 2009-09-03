@@ -12,13 +12,12 @@ module MuninManager
         next unless line.match(/^Benchmark /)
         chunks = line.split(/-/).map{ |x| x.strip }
         data_type = chunks[1] =~ /Queue/ ? 'queue' : 'fb_api'
-        puts chunks[2]
+        next if chunks[2].nil?
         data[data_type] << chunks[2].match('\((.*)\)')[1].to_f
       end
     end
 
     def process!
-      puts data.inspect
       data.each_pair do |component, response_times|
         data[component] = response_times.inject(0.0) {|sum, i| sum + i} / data[component].length rescue 0
       end
@@ -35,7 +34,6 @@ LABEL
     end
 
     def values
-      puts data.inspect
       data.map {|k, v| "#{format_for_munin(k)}.value #{"%.10f" % v}"}.join("\n")
     end
 
