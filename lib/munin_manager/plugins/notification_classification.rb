@@ -19,7 +19,7 @@ module MuninManager
       if cmd = ARGV[0] and allowed_commands.include? cmd
         puts new.config
       else
-        cmd = "/opt/local/bin/mysql5 -u #{ENV['mysql_user']} --password=#{ENV['mysql_password']} -h #{ENV['host']} -e 'use #{ENV['database']}; select count(*) from notification_classifications where created_at >= \"#{1.hour.ago.to_s(:db)}\";' --skip-column-names --silent"
+        cmd = "mysql -u #{ENV['mysql_user']} --password=#{ENV['mysql_password']} -h #{ENV['host']} -e 'use #{ENV['database']}; select count(*) from notification_classifications where created_at >= \"#{1.hour.ago.to_s(:db)}\";' --skip-column-names --silent"
         puts "notification_rate.value %s" % `#{cmd}`
       end
     end
