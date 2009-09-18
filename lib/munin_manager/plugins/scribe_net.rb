@@ -24,6 +24,7 @@ module MuninManager
 
       
       graph_order = 'graph_order'
+      stat_config = ''
       counters.keys.each do |stat|
         stat_name = format_for_munin(stat)
         graph_order << " "+ stat_name
