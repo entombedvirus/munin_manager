@@ -9,7 +9,7 @@ require "#{File.dirname(this_file)}/../lib/munin_manager"
 
 plugin_name = File.basename($0)
 
-if plugin = MuninManager::Plugins[plugin_name]
+if plugin = MuninManager::Plugins[plugin_name.split('.')[0]]
   plugin.run
   exit(0)
 else
