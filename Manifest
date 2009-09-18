@@ -8,6 +8,7 @@ lib/munin_manager/plugins/haproxy_app_response_time.rb
 lib/munin_manager/plugins/haproxy_response_time.rb
 lib/munin_manager/plugins/haproxy_rps.rb
 lib/munin_manager/plugins/network_latency.rb
+lib/munin_manager/plugins/notification_classification.rb
 lib/munin_manager/plugins/packet_loss.rb
 lib/munin_manager/plugins/rails_rendering.rb
 lib/munin_manager/plugins/rails_response_time.rb
