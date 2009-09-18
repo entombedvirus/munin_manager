@@ -6,7 +6,7 @@ module MuninManager
     include ActsAsMuninPlugin
     
     def config
-      "graph_title Notification Classification Creation
+      "graph_title #{ENV['app']} Notification Classification Creation
       graph_vlabel new classifications / hour
       notification_rate.label new classifications / hour
       notification_rate.type derive
