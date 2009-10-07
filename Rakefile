@@ -7,7 +7,7 @@ begin
     s.email = "entombedvirus@gmail.com"
     s.homepage = "http://github.com/entombedvirus/jeweler"
     s.authors = ["Rohith Ravi"]
-    s.files =  FileList["[A-Z]*", "{bin,generators,lib,test}/**/*", 'lib/jeweler/templates/.gitignore']
+    s.files =  FileList["[A-Z]*", "{bin,generators,lib,test,ext}/**/*", 'lib/jeweler/templates/.gitignore']
   end
 rescue LoadError
   puts "Jeweler, or one of its dependencies, is not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
