@@ -77,7 +77,7 @@ graph_category Haproxy
       end
     end
 
-    def self.help_text
+    def self.help_text(options = {})
       %Q{
 #{plugin_name.capitalize} Munin Plugin
 ===========================
@@ -85,7 +85,7 @@ graph_category Haproxy
 Please remember to add something like the lines below to /etc/munin/plugin-conf.d/munin-node
 if the haproxy log file is not at /var/log/haproxy.log
 
-[#{plugin_name}]
+[#{options[:symlink]}]
 env.log_file /var/log/custom/haproxy.log
 
 Also, make sure that the '/var/lib/munin/plugin-state' is writable by munin.
