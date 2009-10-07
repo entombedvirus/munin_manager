@@ -11,11 +11,10 @@ options = OpenStruct.new
 options.plugin_dir = "/etc/munin/plugins"
 
 parser = OptionParser.new do |opts|
-  opts.banner = "Usage: munin_manager <command>  [options]"
+  opts.banner = "Usage: munin_manager [options]"
   opts.separator ""
   
-  opts.separator "Commands:"
-  opts.separator "PLUGIN_NAME is of the form <plugin>[:<symlink>]"
+  opts.separator "PLUGIN_NAME is of the form <plugin>[.<symlink name>]"
   opts.separator ""
   
   opts.on("-l", "--list", "List available plugins to install") do

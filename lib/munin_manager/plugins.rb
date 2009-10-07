@@ -22,7 +22,7 @@ module MuninManager
     end
 
     def search(name)
-      str = name.to_s.split(':', 2).first
+      str = name.to_s.split('.', 2).first
       detect {|plugin_klass| plugin_klass.plugin_name.starts_with?(str)}
     end
   end

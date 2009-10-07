@@ -28,7 +28,7 @@ module MuninManager
       end
 
       def install(options)
-        install_as = options.install_name.split(":").last
+        install_as = options.install_name
         symlink = File.join(options.plugin_dir, install_as)
         runner = File.join(File.dirname(__FILE__), "..", "..", "bin", "runner")
         runner = File.expand_path(runner)
@@ -53,7 +53,7 @@ module MuninManager
 
       # Default uninstaller. Override in included classes if the default is not sufficient
       def uninstall(options)
-        install_as = options.install_name.split(":").last
+        install_as = options.install_name
         symlink = File.join(options.plugin_dir, install_as)
 
         unless File.exists?(symlink)
