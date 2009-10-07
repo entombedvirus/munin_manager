@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
      "VERSION",
      "bin/munin_manager",
      "bin/runner",
+     "ext/string.rb",
      "lib/munin_manager.rb",
      "lib/munin_manager/acts_as_munin_plugin.rb",
      "lib/munin_manager/log_reader.rb",
