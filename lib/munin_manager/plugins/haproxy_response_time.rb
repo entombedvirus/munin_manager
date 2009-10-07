@@ -16,7 +16,7 @@ module MuninManager
         data[:waiting_in_queue] << timers[1].to_f
         data[:server_connect] << timers[2].to_f
         data[:server_response] << timers[3].to_f
-        data[:rails_action] << line.match(/\{([0-9.]+)\}/).captures[0].to_f rescue 0
+        data[:rails_action] << line.match(/\{([0-9.]+)\}/).captures[0].to_f * 1000 rescue 0
         data[:total] << timers[4].to_f
       end
     end
