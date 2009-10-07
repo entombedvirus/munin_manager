@@ -2,6 +2,23 @@ module MuninManager
   class Plugins::HaproxyAppResponseTime < LogReader
     include ActsAsMuninPlugin
 
+    EXTRACTORS = {
+      :client_connect => lambda {|line| line.split(/\s+/)[9].split("/")[0].to_f},
+      :waiting_in_queue => lambda {|line| line.split(/\s+/)[9].split("/")[1].to_f},
+      :server_connect => lambda {|line| line.split(/\s+/)[9].split("/")[2].to_f},
+      :server_response => lambda {|line| line.split(/\s+/)[9].split("/")[3].to_f},
+      :rails_action => lambda {|line| (line.match(/\{([0-9.]+)\}/).captures[0].to_f * 1000) rescue 0},
+      :total => lambda {|line| line.split(/\s+/)[9].split("/")[4].to_f},
+    }
+    
+    def initialize(logfile, options)
+      @measure = options[:measure].to_sym
+      raise ArgumentError, 
+        "I do not know how to measure `%s`" % options[:measure] unless EXTRACTORS.key?(@measure)
+        
+      super(logfile)
+    end
+    
     def data
       @data ||= Hash.new {|h, k| h[k] = Hash.new{|d,v| d[v] = Array.new}}
     end
@@ -13,13 +30,8 @@ module MuninManager
         server, port = chunks[8].split(":") rescue []
         server_name = server.split("/")[1] rescue nil
         next if server_name.nil?
-        timers = chunks[9].split("/") rescue []
-        data[server_name][:client_connect] << timers[0].to_f
-        data[server_name][:waiting_in_queue] << timers[1].to_f
-        data[server_name][:server_connect] << timers[2].to_f
-        data[server_name][:server_response] << timers[3].to_f
-        data[server_name][:rails_action] << line.match(/\{([0-9.]+)\}/).captures[0].to_f rescue 0
-        data[server_name][:total] << timers[4].to_f
+        
+        data[server_name][@measure] << EXTRACTORS[@measure].call(line)
       end
     end
 
@@ -45,10 +57,11 @@ module MuninManager
         server_name = server.split("/")[1] rescue nil
         server_hash[server_name] = '' unless server_name.nil?
       end
-      default = [:client_connect,:waiting_in_queue, :server_connect, :server_response, :rails_action, :total]
+      
+      default = Array(@measure)
             
       config_text = <<-LABEL                     
-graph_title HAProxy Response Breakdown
+graph_title HAProxy App Server #{@measure}
 graph_vlabel time (secs)
 graph_category Haproxy
       LABEL
@@ -67,7 +80,12 @@ graph_category Haproxy
       log_file = ENV['log_file'] || "/var/log/haproxy.log"
       allowed_commands = ['config']
 
-      haproxy = new(log_file)
+      measure = ENV['measure']
+      # Try to figure out what we're trying to measure from the symlink name
+      measure ||= File.basename($0).split(".", 2).last
+      measure = nil unless EXTRACTORS.key?(measure.to_sym)
+      
+      haproxy = new(log_file, :measure => measure || 'total')
 
       if cmd = ARGV[0] and allowed_commands.include? cmd then
         puts haproxy.send(cmd.to_sym)
