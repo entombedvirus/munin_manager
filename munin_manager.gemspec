@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{munin_manager}
-  s.version = "1.2.3"
+  s.version = "1.2.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Rohith Ravi"]
-  s.date = %q{2009-10-07}
+  s.date = %q{2009-10-12}
   s.default_executable = %q{munin_manager}
   s.email = %q{entombedvirus@gmail.com}
   s.executables = ["munin_manager"]
