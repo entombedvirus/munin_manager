@@ -45,31 +45,18 @@ module MuninManager
     end
     
     def config
-      log_file = ENV['log_file'] || "/var/log/haproxy.log"
-      f = File.open(log_file)
-      count = 0
-      server_hash = {}
-      while(!f.eof? && count < 100)
-        count += 1
-        line = f.readline
-        chunks = line.split(/\s+/)
-        server, port = chunks[8].split(":") rescue []
-        server_name = server.split("/")[1] rescue nil
-        server_hash[server_name] = '' unless server_name.nil?
-      end
-      
-      default = Array(@measure)
-            
+      collect!(:save_state => false)
+                  
       config_text = <<-LABEL                     
 graph_title HAProxy App Server #{@measure}
 graph_vlabel time (secs)
 graph_category Haproxy
       LABEL
-      server_hash.keys.sort.each do |server|
-        config_text << default.map{|k| "#{server}_#{k}.label #{server}_#{k}"}.join("\n")
-        config_text << "\n"
+      
+      data.keys.sort.each do |server|
+        config_text << "#{server}_#{@measure}.label #{server}_#{@measure}\n"
       end
-      config_text
+      config_text      
     end
 
     def values
